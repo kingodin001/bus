@@ -1,10 +1,10 @@
 # Автобусная суета / BusSpark
 
-Offline Android bus-parking puzzle inspired by the user-supplied gameplay reference. First playable version: **0.1.0**, **three levels**.
+Offline Android bus-parking puzzle inspired by the user-supplied gameplay reference. Current source version: **0.2.0**, **three levels**.
 
 ## Install
 
-Download [BusSpark-0.1.0.apk](dist/BusSpark-0.1.0.apk). Package: `pro.busspark.game`. Android 8.0+ with an up-to-date Android System WebView and OpenGL ES 3.0. The APK is signed with the project's private release key; the key is not in this repository.
+APK 0.2.0 must be built and signed using the private original release key; version 0.1.0 stays in main until verified. Package: `pro.busspark.game`. Android 8.0+ with an up-to-date Android System WebView and OpenGL ES 3.0. The APK is signed with the project's private release key; the key is not in this repository.
 
 ## Included
 
@@ -51,3 +51,7 @@ The browser suite checks complete playthroughs, blockage, color/capacity conserv
 Original game geometry and UI: `app/src/main/assets/graphics.js`, `icons.js`, `style.css`.
 Generated city background: `app/src/main/assets/art/menu-city.png`; art direction in [docs/art-direction.md](docs/art-direction.md).
 Three.js and DejaVu font notices are bundled beside those dependencies.
+
+## Version 0.2.0
+
+Brighter buses and characters, closer camera, three lengths with capacities 16 / 24 / 40, four passengers per walking queue row, and immersive Android full screen. The update is intended to be signed with the **original** release key so it installs over 0.1.0. Do not distribute CI-test-signed builds as updates.
