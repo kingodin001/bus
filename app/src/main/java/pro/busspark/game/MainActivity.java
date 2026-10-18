@@ -26,16 +26,17 @@ public final class MainActivity extends Activity {
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        getWindow().setStatusBarColor(Color.rgb(130,193,232));
-        getWindow().setNavigationBarColor(Color.rgb(61,87,116));
-        FrameLayout root=new FrameLayout(this); root.setBackgroundColor(Color.rgb(134,190,226));
-        if(Build.VERSION.SDK_INT>=30){
-            getWindow().setDecorFitsSystemWindows(false);
-            root.setOnApplyWindowInsetsListener((v,insets)->{
-                android.graphics.Insets safe=insets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars()|WindowInsets.Type.displayCutout());
-                v.setPadding(safe.left,safe.top,safe.right,safe.bottom);return insets;
-            });
-        }else root.setFitsSystemWindows(true);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        if(Build.VERSION.SDK_INT>=28){
+            WindowManager.LayoutParams params=getWindow().getAttributes();
+            params.layoutInDisplayCutoutMode=WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(params);
+        }
+        FrameLayout root=new FrameLayout(this);
+        root.setBackgroundColor(Color.rgb(226,237,248));
+        if(Build.VERSION.SDK_INT>=30)getWindow().setDecorFitsSystemWindows(false);
+        hideSystemBars();
         web=new WebView(this);web.setBackgroundColor(Color.rgb(196,202,220));
         WebSettings settings=web.getSettings();settings.setJavaScriptEnabled(true);settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(false);settings.setAllowContentAccess(false);settings.setJavaScriptCanOpenWindowsAutomatically(false);
@@ -58,6 +59,18 @@ public final class MainActivity extends Activity {
         root.addView(web,new FrameLayout.LayoutParams(-1,-1));setContentView(root);
         web.loadUrl("https://game.bus.local/index.html");
     }
+    private void hideSystemBars(){
+        getWindow().getDecorView().setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_FULLSCREEN |
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        if(Build.VERSION.SDK_INT>=30){
+            WindowInsetsController c=getWindow().getInsetsController();
+            if(c!=null){c.hide(WindowInsets.Type.statusBars()|WindowInsets.Type.navigationBars());
+                c.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);}
+        }
+    }
+    @Override public void onWindowFocusChanged(boolean focus){super.onWindowFocusChanged(focus);if(focus)hideSystemBars();}
     @Override public void onBackPressed(){web.evaluateJavascript("window.handleBack && window.handleBack()",null);}
     @Override protected void onPause(){super.onPause();web.evaluateJavascript("window.BusGame && window.handleBack && !window.BusGame.snapshot().modal && window.BusGame.snapshot().screen==='game' && window.handleBack()",null);web.onPause();web.pauseTimers();}
     @Override protected void onResume(){super.onResume();if(web!=null){web.onResume();web.resumeTimers();}}
