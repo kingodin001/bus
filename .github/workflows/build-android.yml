@@ -37,8 +37,19 @@ jobs:
           BUS_KEYSTORE: ${{ runner.temp }}/ci-only.jks
           BUS_KEY_PASSWORD: temporary-ci-signing
         run: python3 scripts/build-apk.py
+      - name: Collect release verification tools and original APK
+        run: |
+          mkdir -p out/signing-tools
+          cp "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" out/signing-tools/apksigner.jar
+          cp "$ANDROID_HOME/build-tools/35.0.0/zipalign" out/signing-tools/zipalign
+          cp "$ANDROID_HOME/build-tools/35.0.0/aapt2" out/signing-tools/aapt2
       - uses: actions/upload-artifact@v4
         with:
           name: BusSpark-0.2.0-TEST-ONLY
-          path: dist/BusSpark-0.2.0.apk
+          path: |
+            dist/BusSpark-0.2.0.apk
+            dist/BusSpark-0.1.0.apk
+            out/signing-tools/apksigner.jar
+            out/signing-tools/zipalign
+            out/signing-tools/aapt2
           if-no-files-found: error
