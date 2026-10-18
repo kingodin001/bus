@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const C=require('../app/src/main/assets/core.js');
 for(let i=1;i<=3;i++){
  const l=C.level(i);assert(C.validate(l));assert.deepEqual(C.level(i),l);
- const buses=l.buses.map(b=>({...b}));assert(l.buses.every(b=>({1:16,2:24,3:40}[b.len]===b.capacity));
+ const buses=l.buses.map(b=>({...b}));assert(l.buses.every(b=>({1:16,2:24,3:40}[b.len]===b.capacity)));
  for(const id of l.solution){const b=buses.find(b=>b.id===id);assert.deepEqual(C.blockers(b,buses),[]);b.state='gone';}
  console.log(`Level ${i}: ${l.buses.length} buses, deterministic, no overlaps, solution verified, passenger totals match.`);
 }
