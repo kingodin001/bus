@@ -27,6 +27,12 @@ jobs:
           node --check app/src/main/assets/core.js
           node --check app/src/main/assets/graphics.js
           node --check app/src/main/assets/game.js
+      - name: Browser gameplay and layout tests
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+          node tests/browser.cjs
+          node tests/edge-cases.cjs
       - name: Generate disposable CI-only key
         run: |
           keytool -genkeypair -keystore "$RUNNER_TEMP/ci-only.jks" -alias bus -keyalg RSA -keysize 2048 -validity 2 -storepass temporary-ci-signing -keypass temporary-ci-signing -dname "CN=CI, O=BusSpark" -noprompt
@@ -52,4 +58,5 @@ jobs:
             out/signing-tools/apksigner.jar
             out/signing-tools/zipalign
             out/signing-tools/aapt2
+            out/qa/**
           if-no-files-found: error
