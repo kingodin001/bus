@@ -15,12 +15,12 @@ run(['java','-m','jdk.compiler/com.sun.tools.javac.Main','-encoding','UTF-8','-s
 run([bt/'aapt2','compile','--dir','app/src/main/res','-o',out/'resources.zip'])
 manifest=(root/'app/src/main/AndroidManifest.xml').read_text().replace('<manifest ','<manifest package="pro.busspark.game" ',1)
 (out/'AndroidManifest.xml').write_text(manifest)
-run([bt/'aapt2','link','-o',out/'unsigned.apk','--manifest',out/'AndroidManifest.xml','-I',sdk,'-A',root/'app/src/main/assets','--min-sdk-version','26','--target-sdk-version','35','--version-code','1','--version-name','0.1.0',out/'resources.zip'])
+run([bt/'aapt2','link','-o',out/'unsigned.apk','--manifest',out/'AndroidManifest.xml','-I',sdk,'-A',root/'app/src/main/assets','--min-sdk-version','26','--target-sdk-version','35','--version-code','2','--version-name','0.2.0',out/'resources.zip'])
 (out/'classes.list').write_text('\n'.join(str(p) for p in classes.rglob('*.class')))
 run(['java','-cp',bt/'lib/d8.jar','com.android.tools.r8.D8','--lib',sdk,'--min-api','26','--output',out,'@'+str(out/'classes.list')])
 with zipfile.ZipFile(out/'unsigned.apk','a',zipfile.ZIP_DEFLATED) as z:z.write(out/'classes.dex','classes.dex')
 run([bt/'zipalign','-p','-f','4',out/'unsigned.apk',out/'aligned.apk'])
-dest=root/'dist';dest.mkdir(exist_ok=True);apk=dest/'BusSpark-0.1.0.apk'
+dest=root/'dist';dest.mkdir(exist_ok=True);apk=dest/'BusSpark-0.2.0.apk'
 run(['java','-jar',bt/'lib/apksigner.jar','sign','--debuggable-apk-permitted','false','--v4-signing-enabled','false','--ks',key,'--ks-key-alias',alias,'--ks-pass','env:BUS_KEY_PASSWORD','--out',apk,out/'aligned.apk'])
 run(['java','-jar',bt/'lib/apksigner.jar','verify','--verbose',apk]);run([bt/'aapt2','dump','badging',apk]);run([bt/'zipalign','-c','4',apk])
 print('APK:',apk)
